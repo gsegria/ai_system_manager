@@ -83,3 +83,8 @@ http://<device-ip>:8081
 - Sensor data collection and JSONL logging integrated.
 - Web Dashboard implemented and browser-verified.
 - Physical sensor drivers and AI inference remain future development work.
+
+
+## Demo Screenshot
+
+![AI System Manager Demo](demo/demo01.png)

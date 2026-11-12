@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Platform Manager - Dashboard</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-page">
+
+<header class="topbar">
+    <h1>AI Platform Manager</h1>
+
+    <div>
+        <span>Welcome, {{ username }}</span>
+
+        <form method="POST" action="{{ url_for('logout') }}"
+              style="display:inline; margin-left:16px;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="btn btn-logout">
+                Logout
+            </button>
+        </form>
+    </div>
+</header>
+
+<main class="dashboard-container">
+
+    <section class="panel">
+        <h2>System Status</h2>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="status-label">Service</div>
+                <div id="service-status" class="status-value">
+                    Loading...
+                </div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-label">Operating Mode</div>
+                <div id="service-mode" class="status-value">
+                    --
+                </div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-label">Data Collector</div>
+                <div id="collector-status" class="status-value">
+                    --
+                </div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-label">Collection Count</div>
+                <div id="collection-count" class="status-value">
+                    0
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>System Performance</h2>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="status-label">CPU Usage</div>
+                <div id="system-cpu-usage" class="status-value">--</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-label">CPU Frequency</div>
+                <div id="system-cpu-frequency" class="status-value">--</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-label">CPU Temperature</div>
+                <div id="system-cpu-temperature" class="status-value">--</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-label">Memory</div>
+                <div id="system-memory" class="status-value">--</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-label">Storage</div>
+                <div id="system-storage" class="status-value">--</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-label">Uptime</div>
+                <div id="system-uptime" class="status-value">--</div>
+            </div>
+        </div>
+
+        <div class="system-extra-toggle">
+            <button id="hardware-details-btn" class="btn btn-secondary"
+                    type="button" aria-expanded="false">
+                Hardware Details
+            </button>
+        </div>
+
+        <div id="hardware-details" hidden>
+            <h3>AI Accelerators</h3>
+            <div class="status-grid">
+                <div class="status-card">
+                    <div class="status-label">GPU Driver Load</div>
+                    <div id="system-gpu-usage" class="status-value">--</div>
+                    <div class="status-label">
+                        Frequency: <span id="system-gpu-frequency">--</span>
+                    </div>
+                    <div class="status-label">
+                        Temperature: <span id="system-gpu-temperature">--</span>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-label">NPU Driver Load</div>
+                    <div id="system-npu-usage" class="status-value">--</div>
+                    <div class="status-label">
+                        Frequency: <span id="system-npu-frequency">--</span>
+                    </div>
+                    <div class="status-label">
+                        Temperature: <span id="system-npu-temperature">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Service Control</h2>
+
+        <div class="action-buttons">
+            <button id="start-btn" class="btn btn-start">
+                START
+            </button>
+
+            <button id="stop-btn" class="btn btn-stop">
+                STOP
+            </button>
+        </div>
+
+        <p id="operation-message"></p>
+    </section>
+
+    <section class="panel">
+        <h2>Sensor Monitoring</h2>
+
+        <div class="sensor-grid">
+
+            <div class="sensor-card">
+                <h3>Radar</h3>
+                <div id="radar-status" class="status-label">
+                    Waiting for data...
+                </div>
+
+                <div class="sensor-reading">
+                    <div>Front: <span id="radar-front">--</span> cm</div>
+                    <div>Back: <span id="radar-back">--</span> cm</div>
+                    <div>Left: <span id="radar-left">--</span> cm</div>
+                    <div>Right: <span id="radar-right">--</span> cm</div>
+                </div>
+            </div>
+
+            <div class="sensor-card">
+                <h3>Temperature</h3>
+                <div id="temperature-status" class="status-label">
+                    Waiting for data...
+                </div>
+
+                <div class="sensor-reading">
+                    <span id="temperature-value">--</span> °C
+                </div>
+            </div>
+
+            <div class="sensor-card">
+                <h3>GPS</h3>
+                <div id="gps-status" class="status-label">Waiting for data...</div>
+                <div class="sensor-reading">
+                    <div>Latitude: <span id="gps-latitude">--</span></div>
+                    <div>Longitude: <span id="gps-longitude">--</span></div>
+                    <div>Altitude: <span id="gps-altitude">--</span> m</div>
+                    <div>Satellites: <span id="gps-satellites">--</span></div>
+                </div>
+            </div>
+
+            <div class="sensor-card">
+                <h3>IMU</h3>
+                <div id="imu-status" class="status-label">Waiting for data...</div>
+                <div class="sensor-reading">
+                    <div>Roll: <span id="imu-roll">--</span> °</div>
+                    <div>Pitch: <span id="imu-pitch">--</span> °</div>
+                    <div>Yaw: <span id="imu-yaw">--</span> °</div>
+                    <div>Temperature: <span id="imu-temperature">--</span> °C</div>
+                </div>
+            </div>
+
+            <div class="sensor-card">
+                <h3>Battery</h3>
+                <div id="battery-status" class="status-label">Waiting for data...</div>
+                <div class="sensor-reading">
+                    <div>Voltage: <span id="battery-voltage">--</span> V</div>
+                    <div>Current: <span id="battery-current">--</span> A</div>
+                    <div>Power: <span id="battery-power">--</span> W</div>
+                    <div>Level: <span id="battery-level">--</span> %</div>
+                </div>
+            </div>
+
+            <div class="sensor-card">
+                <h3>Camera</h3>
+                <div id="camera-status" class="status-label">Waiting for data...</div>
+                <div class="sensor-reading">
+                    <div>Resolution: <span id="camera-resolution">--</span></div>
+                    <div>FPS: <span id="camera-fps">--</span></div>
+                    <div>Format: <span id="camera-format">--</span></div>
+                </div>
+            </div>
+
+            <div class="sensor-card">
+                <h3>Depth Camera</h3>
+                <div id="depth-camera-status" class="status-label">Waiting for data...</div>
+                <div class="sensor-reading">
+                    <div>Resolution: <span id="depth-camera-resolution">--</span></div>
+                    <div>Depth: <span id="depth-camera-depth">--</span> m</div>
+                    <div>FPS: <span id="depth-camera-fps">--</span></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="last-update">
+        Last Update: <span id="last-update">--</span>
+    </div>
+
+</main>
+
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+
+</body>
+</html>
